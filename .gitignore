@@ -33,3 +33,4 @@
 
 # Custom ignores
 /BlockchainVoting/BlockchainVoting.xcodeproj
+*.1
