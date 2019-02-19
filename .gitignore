@@ -34,3 +34,4 @@
 # Custom ignores
 /BlockchainVoting/BlockchainVoting.xcodeproj
 *.1
+node_modules/
