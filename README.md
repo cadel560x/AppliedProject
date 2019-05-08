@@ -12,6 +12,13 @@ Governments, for the sake of innovation, transparency and citizen participation 
 
 ## Architecture
 
+The project is structured like follows:  
+* A private blockchain network in AWS consisting in:
+    * One miner
+    * Five nodes
+    * One NAT gateway
+    * One external node
+
 
 ## Technologies Used
 
