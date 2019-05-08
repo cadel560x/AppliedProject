@@ -12,6 +12,11 @@ Governments, for the sake of innovation, transparency and citizen participation 
 
 ## Architecture
 
+<p align="center">
+<img src="https://cdn-images-1.medium.com/max/1600/1*T_YAqogYLteDZ_h6XSp0zg.png" width="350">
+</p>
+
+
 The project is structured like follows:  
 * A private blockchain network in AWS consisting in:
     * One miner
