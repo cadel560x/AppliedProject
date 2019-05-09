@@ -16,7 +16,6 @@ Governments, for the sake of innovation, transparency and citizen participation 
 <img src="https://cdn-images-1.medium.com/max/1600/1*T_YAqogYLteDZ_h6XSp0zg.png" width="350">
 </p>
 
-
 The project is structured like follows:  
 * A private blockchain network in AWS consisting in:
     * One miner
@@ -24,6 +23,9 @@ The project is structured like follows:
     * One NAT gateway
     * One external node
 
+<p align="center">
+<img src="doc/images/network.png" width="550">
+</p>
 
 ## Technologies Used
 
