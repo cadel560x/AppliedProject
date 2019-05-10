@@ -287,7 +287,20 @@ contract Voting {
 This is a simple contract to illustrate how Solidity code works. Here are some points we will refer to in this part.  
 
 The contract requires a list of candidates (see the constructor). We will input this when deploying a new contract. Two functions are defined in this contract: `totalVotesFor` and `voteForCandidate`. We will use these two functions to interact with the contract from both nodes.
- 
+
+#### Smart Contract Compilation
+To compile the solidity code, we will first install npm module called solc. Then use the compiler to compile the contract  
+```
+mahesh@zastrin:~/ethereum_voting_dapp/chapter1$ npm install solc@0.5.3
+mahesh@zastrin:~/ethereum_voting_dapp/chapter1$ node_modules/.bin/solcjs --bin --abi Voting.sol
+mahesh@zastrin:~/ethereum_voting_dapp/chapter1$ ls
+Voting.sol              Voting_sol_Voting.abi   Voting_sol_Voting.bin
+```
+When you compile the code successfully using the command above, the compiler outputs 2 files that are important to understand:  
+
+* Voting_sol_Voting.bin: This is the bytecode you get when the source code in Voting.sol is compiled. This is the code which will be deployed to the blockchain.  
+* Voting_sol_Voting.abi: This is an interface or template of the contract (called abi) which tells the contract user what methods are available in the contract. Whenever you have to interact with the contract in the future, you will need this abi definition.  
+
 After compilation, we need two pieces of information for contract deployment. They are the Application Binary Interface (ABI) and Bytecode.
 
 #### Application Binary Interface (ABI)
@@ -440,6 +453,100 @@ By interacting on both nodes, we see accounts on both nodes are acting on the sa
 3. From Node 2 we see the vote count for Rama is now 5.  
 4. An account on Node 2 votes for Rama again.  
 5. From Node 1 now we see the vote count is now 6.  
+
+### Webpage to connect to the blockchain and vote
+Now that most of the work is done, all we have to do now is create a simple html file with candidate names and invoke the voting commands (which we already tried and tested in the nodejs console) in a js file. Below you can find the html code and the js file. Drop both of them in the ethereum_voting_dapp/chapter1 directory and open the index.html in your browser.  
+index.html 
+```
+<!DOCTYPE html>
+<html>
+<head>
+ <title>Hello World DApp</title>
+ <link href='https://fonts.googleapis.com/css?family=Open Sans:400,700' rel='stylesheet' type='text/css'>
+ <link href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
+</head>
+<body class="container">
+ <h1>A Simple Hello World Voting Application</h1>
+ <div class="table-responsive">
+  <table class="table table-bordered">
+   <thead>
+    <tr>
+     <th>Candidate</th>
+     <th>Votes</th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>Rama</td>
+     <td id="candidate-1"></td>
+    </tr>
+    <tr>
+     <td>Nick</td>
+     <td id="candidate-2"></td>
+    </tr>
+    <tr>
+     <td>Jose</td>
+     <td id="candidate-3"></td>
+    </tr>
+   </tbody>
+  </table>
+ </div>
+ <input type="text" id="candidate" />
+ <a href="#" onclick="voteForCandidate()" class="btn btn-primary">Vote</a>
+</body>
+<script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js@1.0.0-beta.37/dist/web3.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script>
+<script src="./index.js"></script>
+</html>
+```
+index.js
+```
+web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"))
+var account;
+web3.eth.getAccounts().then((f) => {
+ account = f[0];
+})
+
+abi = JSON.parse('[{"constant":true,"inputs":[{"name":"candidate","type":"bytes32"}],"name":"totalVotesFor","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"candidate","type":"bytes32"}],"name":"validCandidate","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"bytes32"}],"name":"votesReceived","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[{"name":"","type":"uint256"}],"name":"candidateList","outputs":[{"name":"","type":"bytes32"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"candidate","type":"bytes32"}],"name":"voteForCandidate","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"inputs":[{"name":"candidateNames","type":"bytes32[]"}],"payable":false,"stateMutability":"nonpayable","type":"constructor"}]')
+
+contract = new web3.eth.Contract(abi);
+contract.options.address = "0x71789831d83d4C8325b324eA9B5fFB27525480b5";
+// update this contract address with your contract address
+
+candidates = {"Rama": "candidate-1", "Nick": "candidate-2", "Jose": "candidate-3"}
+
+function voteForCandidate(candidate) {
+ candidateName = $("#candidate").val();
+ console.log(candidateName);
+
+ contract.methods.voteForCandidate(web3.utils.asciiToHex(candidateName)).send({from: account}).then((f) => {
+  let div_id = candidates[candidateName];
+  contract.methods.totalVotesFor(web3.utils.asciiToHex(candidateName)).call().then((f) => {
+   $("#" + div_id).html(f);
+  })
+ })
+}
+
+$(document).ready(function() {
+ candidateNames = Object.keys(candidates);
+
+ for(var i=0; i<candidateNames.length; i++) {
+ let name = candidateNames[i];
+  
+ contract.methods.totalVotesFor(web3.utils.asciiToHex(name)).call().then((f) => {
+  $("#" + candidates[name]).html(f);
+ })
+ }
+});
+```
+If you remember, we said earlier we will need the abi and the address to interact with any contract. You can see above in the index.js file how they are used to interact with the contract.  
+
+Open the index.html in your browser and you should see something like this.
+<p align="center">
+<img src="https://cdn-images-1.medium.com/max/1600/1*IEIf0DV_RRMpNm4haNoyeQ.png">
+</p>
+
+If you are able to enter the candidate name in the text box and vote and see the vote count increment, the voting application has been successfully deployed.
 
 ## Technologies Used
 
