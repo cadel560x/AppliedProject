@@ -37,6 +37,10 @@ The project is structured as follows:
 <img src="doc/images/network.png" width="550">
 </p>
 
+
+## Demonstration
+[![Watch the video](https://bestgifs.makeagif.com/wp-content/uploads/2016/05/gif-from-youtube.gif)](https://youtu.be/FBV_NhrNXes)
+
 ## Deployment
 ### Environment Setup
 #### Step 1: Launch two EC2 instances.
