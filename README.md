@@ -38,7 +38,7 @@ The project is structured as follows:
 </p>
 
 
-## Demonstration
+## Demonstration Video
 [![Watch the video](https://bestgifs.makeagif.com/wp-content/uploads/2016/05/gif-from-youtube.gif)](https://youtu.be/FBV_NhrNXes)
 
 ## Deployment
